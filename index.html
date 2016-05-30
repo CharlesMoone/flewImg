@@ -58,14 +58,15 @@
      */
     var ImageClass = function () {
         if (this instanceof ImageClass) {
-            this.constructor = this;
-            this.div = new Array(6);
-            this.img = [];
+            this.constructor = this;            //构造函数指向自己
+            this.div = new Array(6);            //创建一个div的容器,最大为6个
+            this.img = [];                      //创建一个img的容器,不设上限
+            //创建一个状态储存器,分别对应2,3,4,5,6个div
             this.widthStatus = [false, false, false, false, false];
-            this.number = 0;
-            this.pullRequest = false;
-            this.divNumber = 0;
-            this.target = null;
+            this.number = 0;                    //储存总图片数量
+            this.pullRequest = false;           //变更对新图片申请的状态
+            this.divNumber = 0;                 //保存当前width对应div的数量
+            this.target = null;                 //保存要插入的目标
         } else {
             return new ImageClass();
         }
@@ -97,22 +98,22 @@
             }
         },
         widthCheck: function (width, target) {
+            this.target = target || document.getElementsByTagName('body')[0];
             if (width >= 1440 && !this.widthStatus[4]) {
-                this.resize(target, 6);
+                this.resize(6);
             } else if (width < 1440 && width >= 1152 && !this.widthStatus[3]) {
-                this.resize(target, 5);
+                this.resize(5);
             } else if (width < 1152 && width >= 864 && !this.widthStatus[2]) {
-                this.resize(target, 4);
+                this.resize(4);
             } else if (width < 864 && width >= 576 && !this.widthStatus[1]) {
-                this.resize(target, 3);
+                this.resize(3);
             } else if (width < 576 && !this.widthStatus[0]) {
-                this.resize(target, 2);
+                this.resize(2);
             }
         },
-        resize: function (target, divNumber) {
+        resize: function (divNumber) {
             this.divNumber = divNumber;
-            this.target = target;
-            target.innerHTML = null;
+            this.target.innerHTML = null;
             this.widthStatus = [false, false, false, false, false];
             this.widthStatus[divNumber-2] = true;
             this.setImg();
@@ -123,7 +124,14 @@
                 this.target.appendChild(this.div[i]);
             }
             for (i = 0; i < this.img.length; i ++) {
+//                var k = 0;
                 this.div[i%this.divNumber].appendChild(this.img[i]);
+//                for (var j = 0; j < this.divNumber; j ++) {
+//                    if (this.div[k].clientHeight > this.div[j].clientHeight) {
+//                        k = j;
+//                    }
+//                }
+//                this.div[k].appendChild(this.img[i]);
             }
         },
         pull: function () {
@@ -148,10 +156,10 @@
     window.onload = function () {
         var image = new ImageClass();
         image.init();
-        image.widthCheck(document.body.clientWidth, document.getElementsByTagName('body')[0]);
+        image.widthCheck(document.body.clientWidth);
 
         window.onresize = function (e) {
-            image.widthCheck(e.currentTarget.innerWidth, document.getElementsByTagName('body')[0]);
+            image.widthCheck(e.currentTarget.innerWidth);
         };
 
         window.onscroll = function () {
