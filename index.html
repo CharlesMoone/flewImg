@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
-    <title>css_display</title>
+    <title>基于flex的图片布局</title>
     <style>
         body {
             margin: 0;
@@ -63,6 +63,9 @@
             this.img = [];
             this.widthStatus = [false, false, false, false, false];
             this.number = 0;
+            this.pullRequest = false;
+            this.divNumber = 0;
+            this.target = null;
         } else {
             return new ImageClass();
         }
@@ -78,9 +81,16 @@
      */
     ImageClass.prototype = {
         init: function () {
+            var count = 0, that = this;
             for (; this.number < 20; this.number ++) {
                 this.img[this.number] = document.createElement('IMG');
                 this.img[this.number].src = 'http://placehold.it/' + (100 + Math.floor(Math.random() * 100)) + 'x' + (Math.floor(Math.random() * 100) + 100);
+                this.img[this.number].onload = function () {
+                    count ++;
+                    if (count == 20) {
+                        that.pullRequest = true;
+                    }
+                }
             }
             for (var i = 0; i < 6; i++) {
                 this.div[i] = document.createElement('DIV');
@@ -100,15 +110,37 @@
             }
         },
         resize: function (target, divNumber) {
+            this.divNumber = divNumber;
+            this.target = target;
             target.innerHTML = null;
             this.widthStatus = [false, false, false, false, false];
             this.widthStatus[divNumber-2] = true;
+            this.setImg();
+        },
+        setImg : function () {
             var i = 0;
-            for (; i < divNumber; i ++) {
-                target.appendChild(this.div[i]);
+            for (; i < this.divNumber; i ++) {
+                this.target.appendChild(this.div[i]);
             }
             for (i = 0; i < this.img.length; i ++) {
-                this.div[i%divNumber].appendChild(this.img[i]);
+                this.div[i%this.divNumber].appendChild(this.img[i]);
+            }
+        },
+        pull: function () {
+            if (!this.pullRequest) return ;
+            console.log(1);
+            this.pullRequest = false;
+            var max = this.number + 20, count = 0, that = this;
+            for (; this.number < max; this.number ++) {
+                this.img[this.number] = document.createElement('IMG');
+                this.img[this.number].src = 'http://placehold.it/' + (100 + Math.floor(Math.random() * 100)) + 'x' + (Math.floor(Math.random() * 100) + 100);
+                this.img[this.number].onload = function () {
+                    count ++;
+                    if (count == 20) {
+                        that.pullRequest = true;
+                        that.setImg();
+                    }
+                }
             }
         }
     };
@@ -120,6 +152,12 @@
 
         window.onresize = function (e) {
             image.widthCheck(e.currentTarget.innerWidth, document.getElementsByTagName('body')[0]);
+        };
+
+        window.onscroll = function () {
+            if (compatible.getScrollTop() + compatible.getWindowHeight() == compatible.getScrollHeight()) {
+                image.pull();
+            }
         }
     };
 
