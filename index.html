@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <title>css_display</title>
     <style>
         body {
@@ -15,27 +16,47 @@
             align-content: flex-start;
             padding: 10px 0.5%;
         }
+<<<<<<< HEAD
         @media screen and (min-width: 1080px) {
+=======
+        @media screen and (min-width: 1440px) {
+>>>>>>> gh-pages
             div {
                 width: 15.66%;
             }
         }
+<<<<<<< HEAD
         @media screen and (max-width: 1080px) and (min-width: 900px) {
+=======
+        @media screen and (max-width: 1440px) and (min-width: 1152px) {
+>>>>>>> gh-pages
             div {
                 width: 19%;
             }
         }
+<<<<<<< HEAD
         @media screen and (max-width: 900px) and (min-width: 720px) {
+=======
+        @media screen and (max-width: 1152px) and (min-width: 864px) {
+>>>>>>> gh-pages
             div {
                 width: 24%;
             }
         }
+<<<<<<< HEAD
         @media screen and (max-width: 720px) and (min-width: 540px) {
+=======
+        @media screen and (max-width: 864px) and (min-width: 576px) {
+>>>>>>> gh-pages
             div {
                 width: 32.33%;
             }
         }
+<<<<<<< HEAD
         @media screen and (max-width: 540px) {
+=======
+        @media screen and (max-width: 576px) {
+>>>>>>> gh-pages
             div {
                 width: 49%;
             }
@@ -52,12 +73,16 @@
 <script>
     /**
      * 图片类
-     * @returns {ImageClass}
-     * @constructor
+     * @returns {ImageClass} 安全模式
+     * @constructor 指向自己
      */
     var ImageClass = function () {
         if (this instanceof ImageClass) {
+<<<<<<< HEAD
             this.constructor = ImageClass;
+=======
+            this.constructor = this;
+>>>>>>> gh-pages
             this.div = new Array(6);
             this.img = [];
             this.widthStatus = [false, false, false, false, false];
@@ -66,6 +91,15 @@
             return new ImageClass();
         }
     };
+
+    /**
+     * 原型方法
+     * @type {{
+     * init: ImageClass.init,                   初始化
+     * widthCheck: ImageClass.widthCheck,       宽度检查
+     * resize: ImageClass.resize                宽度达到标准进行resize
+     * }}
+     */
     ImageClass.prototype = {
         init: function () {
             for (; this.number < 20; this.number ++) {
@@ -77,6 +111,7 @@
             }
         },
         widthCheck: function (width, target) {
+<<<<<<< HEAD
             if (width >= 1080 && !this.widthStatus[4]) {
                 this.widthStatus = [false, false, false, false, false];
                 this.widthStatus[4] = true;
@@ -92,6 +127,24 @@
             }
         },
         resize: function (target, divNumber) {
+=======
+            if (width >= 1440 && !this.widthStatus[4]) {
+                this.resize(target, 6);
+            } else if (width < 1440 && width >= 1152 && !this.widthStatus[3]) {
+                this.resize(target, 5);
+            } else if (width < 1152 && width >= 864 && !this.widthStatus[2]) {
+                this.resize(target, 4);
+            } else if (width < 864 && width >= 576 && !this.widthStatus[1]) {
+                this.resize(target, 3);
+            } else if (width < 576 && !this.widthStatus[0]) {
+                this.resize(target, 2);
+            }
+        },
+        resize: function (target, divNumber) {
+            target.innerHTML = null;
+            this.widthStatus = [false, false, false, false, false];
+            this.widthStatus[divNumber-2] = true;
+>>>>>>> gh-pages
             var i = 0;
             for (; i < divNumber; i ++) {
                 target.appendChild(this.div[i]);
@@ -105,10 +158,16 @@
     window.onload = function () {
         var image = new ImageClass();
         image.init();
+<<<<<<< HEAD
         image.widthCheck(document., document.getElementsByTagName('body')[0]);
 
         window.onresize = function (e) {
             document.getElementsByTagName('body')[0].innerHTML = null;
+=======
+        image.widthCheck(document.body.clientWidth, document.getElementsByTagName('body')[0]);
+
+        window.onresize = function (e) {
+>>>>>>> gh-pages
             image.widthCheck(e.currentTarget.innerWidth, document.getElementsByTagName('body')[0]);
         }
     };
