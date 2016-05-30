@@ -7,13 +7,38 @@
         body {
             margin: 0;
             display: flex;
+            flex-wrap: wrap;
         }
         div {
             display: inherit;
             flex-wrap: wrap;
             align-content: flex-start;
-            width: 24%;
             padding: 10px 0.5%;
+        }
+        @media screen and (min-width: 1080px) {
+            div {
+                width: 15.66%;
+            }
+        }
+        @media screen and (max-width: 1080px) and (min-width: 900px) {
+            div {
+                width: 19%;
+            }
+        }
+        @media screen and (max-width: 900px) and (min-width: 720px) {
+            div {
+                width: 24%;
+            }
+        }
+        @media screen and (max-width: 720px) and (min-width: 540px) {
+            div {
+                width: 32.33%;
+            }
+        }
+        @media screen and (max-width: 540px) {
+            div {
+                width: 49%;
+            }
         }
         div img {
             width: 100%;
@@ -23,10 +48,6 @@
     </style>
 </head>
 <body>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
 <script src="compatible.js"></script>
 <script>
     /**
@@ -37,8 +58,9 @@
     var ImageClass = function () {
         if (this instanceof ImageClass) {
             this.constructor = ImageClass;
-            this.div = document.getElementsByTagName('div');
-            this.img = null;
+            this.div = new Array(6);
+            this.img = [];
+            this.widthStatus = [false, false, false, false, false];
             this.number = 0;
         } else {
             return new ImageClass();
@@ -46,24 +68,36 @@
     };
     ImageClass.prototype = {
         init: function () {
-            for (var i = 0; i < 20; i ++) {
-                this.img = document.createElement('IMG');
-                this.img.src = 'http://placehold.it/' + (100 + Math.floor(Math.random() * 100)) + 'x' + (Math.floor(Math.random() * 100) + 100);
-                this.div[i%4].appendChild(this.img);
-                var that = this;
-                this.img.onload = function () {
-                    if (++that.number != 20) {
-                        return;
-                    }
-                    that.number = 0;
-                    window.onscroll = function () {
-                        if (compatible.getScrollTop() + compatible.getWindowHeight() == compatible.getScrollHeight()) {
-                            console.log(1);
-                            that.init();
-                            window.onscroll = null;
-                        }
-                    };
-                };
+            for (; this.number < 20; this.number ++) {
+                this.img[this.number] = document.createElement('IMG');
+                this.img[this.number].src = 'http://placehold.it/' + (100 + Math.floor(Math.random() * 100)) + 'x' + (Math.floor(Math.random() * 100) + 100);
+            }
+            for (var i = 0; i < 6; i++) {
+                this.div[i] = document.createElement('DIV');
+            }
+        },
+        widthCheck: function (width, target) {
+            if (width >= 1080 && !this.widthStatus[4]) {
+                this.widthStatus = [false, false, false, false, false];
+                this.widthStatus[4] = true;
+                this.resize(target, 6);
+            } else if (width < 1080 && width >= 900 && !this.widthStatus[3]) {
+                this.widthStatus = [false, false, false, false, false];
+                this.widthStatus[3] = true;
+                this.resize(target, 5);
+            } else if (width < 900 && width >= 720 && !this.widthStatus[2]) {
+                this.widthStatus = [false, false, false, false, false];
+                this.widthStatus[2] = true;
+                this.resize(target, 4);
+            }
+        },
+        resize: function (target, divNumber) {
+            var i = 0;
+            for (; i < divNumber; i ++) {
+                target.appendChild(this.div[i]);
+            }
+            for (i = 0; i < this.img.length; i ++) {
+                this.div[i%divNumber].appendChild(this.img[i]);
             }
         }
     };
@@ -71,7 +105,14 @@
     window.onload = function () {
         var image = new ImageClass();
         image.init();
+        image.widthCheck(document., document.getElementsByTagName('body')[0]);
+
+        window.onresize = function (e) {
+            document.getElementsByTagName('body')[0].innerHTML = null;
+            image.widthCheck(e.currentTarget.innerWidth, document.getElementsByTagName('body')[0]);
+        }
     };
+
 </script>
 </body>
 </html>
