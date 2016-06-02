@@ -29,7 +29,10 @@ var ImageClass = function (pullNumber) {
      * }}
  */
 ImageClass.prototype = {
-    init: function () {
+    init: function (target) {
+        try {
+            this.target = target || document.getElementsByTagName('body')[0];
+        } catch (e) {console.error(e)}
         for (var i = 0; i < 6; i++) {
             this.div[i] = {
                 dom: document.createElement('DIV'),
@@ -37,10 +40,7 @@ ImageClass.prototype = {
             };
         }
     },
-    widthCheck: function (width, target) {
-        try {
-            this.target = target || document.getElementsByTagName('body')[0];
-        } catch (e) {console.error(e)}
+    widthCheck: function (width) {
         if (width >= 1440 && !this.widthStatus[4]) {
             this.resize(6);
         } else if (width < 1440 && width >= 1152 && !this.widthStatus[3]) {
@@ -65,6 +65,11 @@ ImageClass.prototype = {
         for (var i = 0; i < this.divNumber; i ++) {
             this.target.appendChild(this.div[i].dom);
             this.div[i].dom.style.width = 100 / this.divNumber - 1 + "%";
+            this.div[i].length = 0;
+        }
+        for (i = 0; i < this.img.length; i ++) {
+            this.div[i%this.divNumber].dom.appendChild(this.img[i]);
+            this.div[i%this.divNumber].length += this.img[i].height;
         }
     },
     setImg: function (img, height) {
@@ -75,7 +80,6 @@ ImageClass.prototype = {
             }
         }
         this.div[temp].dom.appendChild(img);
-        console.log(img.height);
         this.div[temp].length += height;
     },
     pull: function () {

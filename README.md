@@ -10,9 +10,20 @@ demo: https://charlesmoone.github.io/flewImg
 
     <script src="imageClass.js"></script>
 
-特意说明：firefox不兼容、IE没有测试
+    <script>
+        var image = new ImageClass();
+        image.init();
+        image.widthCheck(document.body.clientWidth);
+        image.pull();
+    </script>
 
-使用方法：加载页面后，滚动条到底则继续申请20个图片
+特意说明：
+1. init方法的参数选填,不选默认为dom级元素body。
+1. widthCheck方法在宽度发生改变的时候使用,eg:window.onresize;
+2. pull方法在需要新图片加入的时候使用,eg:window.onscroll;
+3. firefox不兼容、IE没有测试;
+
+demo使用说明：加载页面后，滚动条到底则继续申请20个图片
 
 实现方法是给div使用diplay:flex，然后通过js去手动给div中添加图片
 
@@ -24,7 +35,7 @@ ImageClass类
 >3. 其他初始化则为了进行状态转化等作用
 
 >#####原型方法
->+ init - 初始化div
+>+ init - 初始化div,需要提供显示目标[dom元素]。
 >+ widthCheck - 宽度监测,配合css使用,自动监测,1440以上6列,每隔288降低一列。最低2列为576
 >+ resize - div重排,配合widthCheck使用,或者手动进行配置,参数为divNumber(列数)和target(插入目标)。
 >+ resetImg - 实现div重排。
